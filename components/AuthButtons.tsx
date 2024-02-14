@@ -1,18 +1,6 @@
-import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
-import React from 'react';
 
 export const AuthButtons = async () => {
-  const supabase = createClient();
-
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (session) {
-    return undefined;
-  }
-
   return (
     <div className="mt-10 flex items-center justify-center gap-x-6">
       <Link

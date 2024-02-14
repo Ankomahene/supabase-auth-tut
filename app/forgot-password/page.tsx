@@ -1,44 +1,11 @@
-import Link from 'next/link';
-import { headers } from 'next/headers';
-import { createClient } from '@/utils/supabase/server';
-import { redirect } from 'next/navigation';
 import Header from '@/components/Header/Header';
+import Link from 'next/link';
 
 export default async function ForgotPassword({
   searchParams,
 }: {
   searchParams: { message: string };
 }) {
-  const supabase = createClient();
-
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (session) {
-    return redirect('/');
-  }
-
-  const confirmReset = async (formData: FormData) => {
-    'use server';
-
-    const origin = headers().get('origin');
-    const email = formData.get('email') as string;
-    const supabase = createClient();
-
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${origin}/reset-password`,
-    });
-
-    if (error) {
-      return redirect('/forgot-password?message=Could not authenticate user');
-    }
-
-    return redirect(
-      '/confirm?message=Password Reset link has been sent to your email address'
-    );
-  };
-
   return (
     <div>
       <Header />
@@ -51,10 +18,7 @@ export default async function ForgotPassword({
       </Link>
 
       <div className="w-full px-8 sm:max-w-md mx-auto mt-4">
-        <form
-          className="animate-in flex-1 flex flex-col w-full justify-center gap-2 text-foreground mb-4"
-          action={confirmReset}
-        >
+        <form className="animate-in flex-1 flex flex-col w-full justify-center gap-2 text-foreground mb-4">
           <label className="text-md" htmlFor="email">
             Enter Email Address
           </label>

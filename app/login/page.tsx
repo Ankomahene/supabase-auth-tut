@@ -1,42 +1,11 @@
 import Header from '@/components/Header/Header';
-import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 
 export default async function Login({
   searchParams,
 }: {
   searchParams: { message: string };
 }) {
-  const supabase = createClient();
-
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (session) {
-    return redirect('/');
-  }
-
-  const signIn = async (formData: FormData) => {
-    'use server';
-
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-    const supabase = createClient();
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      return redirect('/login?message=Could not authenticate user');
-    }
-
-    return redirect('/');
-  };
-
   return (
     <div>
       <Header />
@@ -49,10 +18,7 @@ export default async function Login({
       </Link>
 
       <div className="w-full px-8 sm:max-w-md mx-auto mt-4">
-        <form
-          className="animate-in flex-1 flex flex-col w-full justify-center gap-2 text-foreground mb-4"
-          action={signIn}
-        >
+        <form className="animate-in flex-1 flex flex-col w-full justify-center gap-2 text-foreground mb-4">
           <label className="text-md" htmlFor="email">
             Email
           </label>
